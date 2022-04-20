@@ -30,6 +30,7 @@ public class NPC : MonoBehaviour {
     private Transform player;
 
     [HideInInspector] public bool moveAway = true;
+    [HideInInspector] public bool exclaimation = false;
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;

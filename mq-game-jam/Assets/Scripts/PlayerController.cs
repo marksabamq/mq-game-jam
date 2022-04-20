@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
     public float moveSpeed = 3;
     [SerializeField] private SpriteRenderer spr;
+    [SerializeField] private SpriteRenderer ropeSpr;
     public Sprite forwardSprite;
     public Sprite sideSprite;
+
+    [HideInInspector] public bool canMove = true;
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;
@@ -21,11 +25,12 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private float h,v; 
+    private float h, v;
     private Rigidbody rig;
 
     // Start is called before the first frame update
-    void Start() {
+    void Start()
+    {
         rig = GetComponent<Rigidbody>();
     }
 
@@ -34,6 +39,9 @@ public class PlayerController : MonoBehaviour {
     {
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
+
+        bool checkInteract = false;
+        if (Input.GetKeyDown(KeyCode.E)) { checkInteract = true; }
 
         Collider[] inArea = Physics.OverlapSphere(transform.position, 5);
         foreach (Collider b in inArea)
@@ -46,24 +54,40 @@ public class PlayerController : MonoBehaviour {
                 {
                     npc.MoveDir((b.transform.position - transform.position).normalized);
                 }
+                if (npc.exclaimation)
+                {
+                    if (checkInteract)
+                    {
+                        //stop moving. generate dialogue. show dialogue
+                        canMove = false;
+                    }
+                }
             }
         }
     }
 
-    void FixedUpdate() {
-        rig.velocity = new Vector3(h, 0, v) * moveSpeed;
-        facing = h < 0 ? -1 : h > 0 ? 1 : 0;
+    void FixedUpdate()
+    {
+        if (canMove)
+        {
+            rig.velocity = new Vector3(h, 0, v) * moveSpeed;
+
+            facing = h < 0 ? -1 : h > 0 ? 1 : 0;
+        }
     }
 
-    void UpdatedFacing() {
+    void UpdatedFacing()
+    {
         if (m_facing == 0)
         {
             spr.flipX = false;
+            ropeSpr.flipX = false;
             spr.sprite = forwardSprite;
         }
         else
         {
             spr.flipX = facing == -1;
+            ropeSpr.flipX = facing == -1;
             spr.sprite = sideSprite;
         }
     }
