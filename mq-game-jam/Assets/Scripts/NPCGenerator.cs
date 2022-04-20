@@ -5,12 +5,15 @@ using UnityEngine;
 public class NPCGenerator : MonoBehaviour {
     public GameObject npcPrefab;
     public int npcCount = 100;
+    public float spawnRange = 25;
     
     private List<GameObject> npcs = new List<GameObject>();
 
     private ClothingItems[] clothingItems;
     private ClothingColour[] clothingColours = new ClothingColour[] {
-        new ClothingColour(new Color(1,0,0), "red")
+        new ClothingColour(new Color(1,0,0), "red"),
+        new ClothingColour(new Color(0,1,0), "blue"),
+        new ClothingColour(new Color(0,0,1), "green")
     };
 
     void Start() {
@@ -25,24 +28,28 @@ public class NPCGenerator : MonoBehaviour {
                 newNPC.AddComponent<NPC>();
             }
 
+            Vector3 npcPos = Random.insideUnitSphere * spawnRange;
+            npcPos.y = 0;
+
+            newNPC.transform.position = npcPos;
+
             NPC npc = newNPC.GetComponent<NPC>();
 
             ClothingItems cItem = clothingItems[Random.Range(0, clothingItems.Length)];
             ClothingColour cColour = clothingColours[Random.Range(0, clothingColours.Length)];
-            string cDesc = cItem.description.Replace("<color>", cColour.colourName);
-            ClothingItem newClothing = new ClothingItem(cItem, cColour.colour, cDesc);
+            ClothingItem newClothing = new ClothingItem(cItem, cColour);
 
             npc.CreateNPC(newClothing);
         }
     }
+}
 
-    class ClothingColour {
-        public Color colour;
-        public string colourName;
+ public class ClothingColour {
+    public Color colour;
+    public string colourName;
 
-        public ClothingColour(Color c, string cName) {
-            this.colour = c;
-            this.colourName = cName;
-        }
+    public ClothingColour(Color c, string cName) {
+        this.colour = c;
+        this.colourName = cName;
     }
 }
