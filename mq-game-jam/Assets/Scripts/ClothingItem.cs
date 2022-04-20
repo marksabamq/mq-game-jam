@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ClothingItem {
     public ClothingItems clothingItem;
-    public color clothingColour;
+    public Color clothingColour;
     public string clothingDescription;
 
-    public ClothingItem(ClothingItems clothingItem, color clothingColour, string clothingDescription) {
+    public ClothingItem(ClothingItems clothingItem, Color clothingColour, string clothingDescription) {
         this.clothingItem = clothingItem;
         this.clothingColour = clothingColour;
-        this.clothinDescription = clothingDescription;
+        this.clothingDescription = clothingDescription;
     }
 }
     

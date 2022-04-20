@@ -10,7 +10,7 @@ public class NPCGenerator : MonoBehaviour {
 
     private ClothingItems[] clothingItems;
     private ClothingColour[] clothingColours = new ClothingColour[] {
-        new ClothingColour(color(1,0,0), "red");
+        new ClothingColour(new Color(1,0,0), "red")
     };
 
     void Start() {
@@ -27,20 +27,20 @@ public class NPCGenerator : MonoBehaviour {
 
             NPC npc = newNPC.GetComponent<NPC>();
 
-            ClothingItems cItem = Random.Range(0, clothingItems.Length);
-            ClothingColour cColour = Random.Range(0, clothingColours.Length);
-            string cDesc = cItem.clothinDescription.replace("<color>", cColour.colourName);
-            ClothingItem newClothing =  new ClothingItem(cItem, cColour, cDesc);
+            ClothingItems cItem = clothingItems[Random.Range(0, clothingItems.Length)];
+            ClothingColour cColour = clothingColours[Random.Range(0, clothingColours.Length)];
+            string cDesc = cItem.description.Replace("<color>", cColour.colourName);
+            ClothingItem newClothing = new ClothingItem(cItem, cColour.colour, cDesc);
 
             npc.CreateNPC(newClothing);
         }
     }
 
     class ClothingColour {
-        public color colour;
+        public Color colour;
         public string colourName;
 
-        public ClothingColour(color c, string cName) {
+        public ClothingColour(Color c, string cName) {
             this.colour = c;
             this.colourName = cName;
         }
