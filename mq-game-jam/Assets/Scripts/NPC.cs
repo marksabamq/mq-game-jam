@@ -19,7 +19,7 @@ public class NPC : MonoBehaviour {
 
     private Rigidbody rig;
 
-    private ClothingItem clothingItem;
+    [HideInInspector] public ClothingItem clothingItem;
 
     private float flipDeadzone = 0.5f;
 

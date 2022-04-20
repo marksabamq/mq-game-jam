@@ -11,7 +11,7 @@ public class NPCGenerator : MonoBehaviour {
     public GameObject exclaimation;
     private int exclaimNPC = 0;
 
-    private List<GameObject> npcs = new List<GameObject>();
+    private List<NPC> npcs = new List<NPC>();
 
     private ClothingItems[] clothingItems;
     private ClothingColour[] clothingColours = new ClothingColour[] {
@@ -64,16 +64,20 @@ public class NPCGenerator : MonoBehaviour {
 
             npc.CreateNPC(permutatedClothing[i], player);
 
-            npcs.Add(newNPC);
+            npcs.Add(npc);
         }
 
         exclaimNPC = Random.Range(0, npcs.Count);
-        npcs[exclaimNPC].GetComponent<NPC>().moveAway = false;
+        npcs[exclaimNPC].moveAway = false;
     }
 
-    public void GetRandomNPC()
+    public NPC GetRandomNPC()
     {
+        int rndIndex = Random.Range(0, npcs.Count);
+        rndIndex = rndIndex == exclaimNPC ? rndIndex + 1 : rndIndex;
+        rndIndex = rndIndex >= npcs.Count - 1 ? 0 : rndIndex;
 
+        return npcs[rndIndex];
     }
 
     private void Update()
