@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class NPCGenerator : MonoBehaviour {
     public GameObject npcPrefab;
-    public int npcCount = 100;
     public float spawnRange = 25;
     
     private List<GameObject> npcs = new List<GameObject>();
@@ -13,16 +12,32 @@ public class NPCGenerator : MonoBehaviour {
     private ClothingColour[] clothingColours = new ClothingColour[] {
         new ClothingColour(new Color(1,0,0), "red"),
         new ClothingColour(new Color(0,1,0), "blue"),
-        new ClothingColour(new Color(0,0,1), "green")
+        new ClothingColour(new Color(0,0,1), "green"),
+        new ClothingColour(new Color(0,1,1), "yellow"),
+        new ClothingColour(new Color(1,1,0), "purple"),
+        new ClothingColour(new Color(0,0,0), "black")
     };
+
+    private List<ClothingItem> permutatedClothing = new List<ClothingItem>();
 
     void Start() {
         clothingItems = Resources.LoadAll<ClothingItems>("ClothingItems/");
+        GenerateClothes();
         GenerateNPCs();
     }
 
+    void GenerateClothes() {
+        for (int i = 0; i < clothingItems.Length; i++)
+        {
+            for (int j = 0; j < clothingColours.Length; j++)
+            {
+                permutatedClothing.Add(new ClothingItem(clothingItems[i], clothingColours[j]));
+            }
+        }
+    }
+
     void GenerateNPCs()  {
-        for(int i =0; i < npcCount; i++) {
+        for(int i =0; i < permutatedClothing.Count; i++) {
             GameObject newNPC = Instantiate(npcPrefab, transform.position, Quaternion.identity);
             if(!newNPC.GetComponent<NPC>()) {
                 newNPC.AddComponent<NPC>();
@@ -35,11 +50,9 @@ public class NPCGenerator : MonoBehaviour {
 
             NPC npc = newNPC.GetComponent<NPC>();
 
-            ClothingItems cItem = clothingItems[Random.Range(0, clothingItems.Length)];
-            ClothingColour cColour = clothingColours[Random.Range(0, clothingColours.Length)];
-            ClothingItem newClothing = new ClothingItem(cItem, cColour);
+            npc.CreateNPC(permutatedClothing[i]);
 
-            npc.CreateNPC(newClothing);
+            npcs.Add(newNPC);
         }
     }
 }

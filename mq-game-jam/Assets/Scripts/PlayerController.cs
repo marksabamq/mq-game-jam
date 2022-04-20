@@ -49,9 +49,7 @@ public class PlayerController : MonoBehaviour {
         facing = h < 0 ? -1 : h > 0 ? 1 : 0;
     }
 
-    void UpdatedFacing()
-    {
-        Debug.Log($"Updated facing: {m_facing}");
+    void UpdatedFacing() {
         if (m_facing == 0)
         {
             spr.flipX = false;
