@@ -30,16 +30,22 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
 
         Collider[] inArea = Physics.OverlapSphere(transform.position, 5);
-        foreach(Collider b in inArea)
+        foreach (Collider b in inArea)
         {
-            if(b.GetComponent<NPC>())
+            if (b.GetComponent<NPC>())
             {
-                b.GetComponent<NPC>().MoveDir((b.transform.position - transform.position).normalized);
+                NPC npc = b.GetComponent<NPC>();
+
+                if (npc.moveAway)
+                {
+                    npc.MoveDir((b.transform.position - transform.position).normalized);
+                }
             }
         }
     }

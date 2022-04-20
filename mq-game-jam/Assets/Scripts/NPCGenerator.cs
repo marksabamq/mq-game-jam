@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCGenerator : MonoBehaviour {
+    public Transform player;
+
     public GameObject npcPrefab;
     public float spawnRange = 25;
-    
+
+    public GameObject exclaimation;
+    private int exclaimNPC = 0;
+
     private List<GameObject> npcs = new List<GameObject>();
 
     private ClothingItems[] clothingItems;
@@ -26,12 +31,16 @@ public class NPCGenerator : MonoBehaviour {
         GenerateNPCs();
     }
 
-    void GenerateClothes() {
+    void GenerateClothes()
+    {
         for (int i = 0; i < clothingItems.Length; i++)
         {
             for (int j = 0; j < clothingColours.Length; j++)
             {
-                permutatedClothing.Add(new ClothingItem(clothingItems[i], clothingColours[j]));
+                if (Random.Range(1, 10) < 8) //Randomly skip some permutations
+                {
+                    permutatedClothing.Add(new ClothingItem(clothingItems[i], clothingColours[j]));
+                }
             }
         }
     }
@@ -50,10 +59,18 @@ public class NPCGenerator : MonoBehaviour {
 
             NPC npc = newNPC.GetComponent<NPC>();
 
-            npc.CreateNPC(permutatedClothing[i]);
+            npc.CreateNPC(permutatedClothing[i], player);
 
             npcs.Add(newNPC);
         }
+
+        exclaimNPC = Random.Range(0, npcs.Count);
+        npcs[exclaimNPC].GetComponent<NPC>().moveAway = false;
+    }
+
+    private void Update()
+    {
+        exclaimation.transform.position = npcs[exclaimNPC].transform.position;
     }
 }
 
