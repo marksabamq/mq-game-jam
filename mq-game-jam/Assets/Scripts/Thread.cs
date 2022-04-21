@@ -20,6 +20,26 @@ public class Thread : MonoBehaviour
     {
         lr = GetComponent<LineRenderer>();
         lr.positionCount = 0;
+        linePoints.Clear();
+    }
+
+    private void OnEnable()
+    {
+        if(lr == null)
+        {
+            lr = GetComponent<LineRenderer>();
+        }
+    }
+
+    public void CreateThread(Transform start, Transform end, bool move)
+    {
+        tiedStart = start;
+        tiedEnd = end;
+        moving = move;
+
+        linePoints.Clear();
+
+        AddPos(tiedStart.position);
     }
 
     private void Update()
@@ -29,11 +49,18 @@ public class Thread : MonoBehaviour
             float dist = Vector3.Distance(tiedEnd.position, prevPos);
             if(dist > newPointDist)
             {
-                prevPos = tiedEnd.position;
-                linePoints.Add(prevPos);
-                lr.positionCount = linePoints.Count;
-                lr.SetPositions(linePoints.ToArray());
+                AddPos(tiedEnd.position);
             }
         }
+    }
+
+    public void AddPos(Vector3 pos)
+    {
+        //get dist from prev pos. add points inbetween
+
+        prevPos = pos;
+        linePoints.Add(prevPos);
+        lr.positionCount = linePoints.Count;
+        lr.SetPositions(linePoints.ToArray());
     }
 }

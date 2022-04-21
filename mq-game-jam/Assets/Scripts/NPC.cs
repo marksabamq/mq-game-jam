@@ -31,6 +31,13 @@ public class NPC : MonoBehaviour {
 
     [HideInInspector] public bool moveAway = true;
     [HideInInspector] public bool exclaimation = false;
+    private bool threadConnected = false;
+    private LineRenderer thread = null;
+    private Transform connectedNPC = null;
+    private int currThreadIndex = 0;
+    private bool backward;
+
+    private bool found = false;
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;
@@ -57,23 +64,63 @@ public class NPC : MonoBehaviour {
         clothingRenderer.color = clothing.clothingColour.colour;
     }
 
-    void Update() {
-        currMoveTime += Time.deltaTime;
-        facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
+    void Update()
+    {
+        if (!found)
+        {
+            currMoveTime += Time.deltaTime;
+            facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
 
-        characterRenderer.sortingOrder = player.position.z < transform.position.z ? 0 : 3;
-        clothingRenderer.sortingOrder = player.position.z < transform.position.z ? 1 : 4;
+            characterRenderer.sortingOrder = player.position.z < transform.position.z ? 0 : 3;
+            clothingRenderer.sortingOrder = player.position.z < transform.position.z ? 1 : 4;
+
+            if (threadConnected)
+            {
+                Vector3 threadPos = thread.GetPosition(currThreadIndex);
+                rig.velocity = (threadPos - transform.position).normalized;
+
+                Vector2 v2Pos = new Vector2(transform.position.x, transform.position.z);
+
+                if (Vector2.Distance(v2Pos, new Vector2(connectedNPC.position.x, connectedNPC.position.z)) < 2)
+                {
+                    found = true;
+                    rig.constraints = RigidbodyConstraints.FreezeAll;
+                    HeartFade(1);
+                }
+
+                if (Vector2.Distance(v2Pos, new Vector2(threadPos.x, threadPos.z)) < 0.2f)
+                {
+                    currThreadIndex = backward ? currThreadIndex - 1 : currThreadIndex + 1;
+                }
+            }
+        }
 
         heart.color = new Color(heart.color.r, heart.color.g, heart.color.b, Mathf.MoveTowards(heart.color.a, heartFadeTo, Time.deltaTime * fadeSpeed));
         rope.color = new Color(rope.color.r, rope.color.g, rope.color.b, Mathf.MoveTowards(rope.color.a, ropeFadeTo, Time.deltaTime * fadeSpeed));
     }
 
-    void FixedUpdate() {
-        if(currMoveTime < moveTime && currMoveTime != 0) {
-            rig.velocity = moveDir;
-        } else {
-            rig.velocity = Vector3.zero;
+    void FixedUpdate()
+    {
+        if (!threadConnected)
+        {
+            if (currMoveTime < moveTime && currMoveTime != 0)
+            {
+                rig.velocity = moveDir;
+            }
+            else
+            {
+                rig.velocity = Vector3.zero;
+            }
         }
+    }
+
+    public void ConnectThread(LineRenderer t, NPC connectedTo, bool backwardTraverse)
+    {
+        threadConnected = true;
+        thread = t;
+        currThreadIndex = backwardTraverse ? thread.positionCount - 1 : 0;
+        connectedNPC = connectedTo.transform;
+        backward = backwardTraverse;
     }
 
     void UpdatedFacing()

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b325de3c6209de24b864242e939289e1, type: 3}
-  m_Name: skirt
+  m_Name: bowtie
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 7566f1a6661b2e94fa009cb7610e465e, type: 3}
-  sideSprite: {fileID: 21300000, guid: 17045ee92fac147478403919c47f6cd1, type: 3}
-  clothingName: skirt
+  sprite: {fileID: 21300000, guid: 9a6ebad56173a8d4dbfe1af5fdc77b3a, type: 3}
+  sideSprite: {fileID: 21300000, guid: 6286b9f66551300458eff580e3206db8, type: 3}
+  clothingName: bowtie

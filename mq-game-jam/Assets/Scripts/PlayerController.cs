@@ -54,12 +54,20 @@ public class PlayerController : MonoBehaviour
                 {
                     npc.MoveDir((b.transform.position - transform.position).normalized);
                 }
-                if (npc.exclaimation)
+                if (checkInteract)
                 {
-                    if (checkInteract)
+                    float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(npc.transform.position.x, npc.transform.position.z));
+                    if (dist < 5 && Mathf.Abs(transform.position.x - npc.transform.position.x) < 1f)
                     {
-                        //stop moving. generate dialogue. show dialogue
-                        canMove = false;
+                        if (npc.exclaimation)
+                        {
+                            //stop moving. generate dialogue. show dialogue
+                            StateManager.instance.NewSearch(npc);
+                        }
+                        else
+                        {
+                            StateManager.instance.CheckNPC(npc);
+                        }
                     }
                 }
             }

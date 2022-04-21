@@ -8,16 +8,13 @@ public class NPCGenerator : MonoBehaviour {
     public GameObject npcPrefab;
     public float spawnRange = 25;
 
-    public GameObject exclaimation;
-    private int exclaimNPC = 0;
-
-    private List<NPC> npcs = new List<NPC>();
+    [HideInInspector] public List<NPC> npcs = new List<NPC>();
 
     private ClothingItems[] clothingItems;
     private ClothingColour[] clothingColours = new ClothingColour[] {
         new ClothingColour(new Color(1,0,0), "red"),
-        new ClothingColour(new Color(0,1,0), "blue"),
-        new ClothingColour(new Color(0,0,1), "green"),
+        new ClothingColour(new Color(0,0,1), "blue"),
+        new ClothingColour(new Color(0,1,0), "green"),
         new ClothingColour(new Color(1,1,0), "yellow"),
         new ClothingColour(new Color(0.5f,0,1), "purple"),
         new ClothingColour(new Color(1,0,1), "pink"),
@@ -46,6 +43,11 @@ public class NPCGenerator : MonoBehaviour {
                 }
             }
         }
+
+        if (permutatedClothing.Count % 2 == 0) //We need an odd number
+        {
+            permutatedClothing.RemoveAt(0);
+        }
     }
 
     void GenerateNPCs()  {
@@ -59,6 +61,7 @@ public class NPCGenerator : MonoBehaviour {
             npcPos.y = 0;
 
             newNPC.transform.position = npcPos;
+            newNPC.transform.SetParent(this.transform);
 
             NPC npc = newNPC.GetComponent<NPC>();
 
@@ -66,23 +69,25 @@ public class NPCGenerator : MonoBehaviour {
 
             npcs.Add(npc);
         }
-
-        exclaimNPC = Random.Range(0, npcs.Count);
-        npcs[exclaimNPC].moveAway = false;
     }
 
-    public NPC GetRandomNPC()
+    public NPC GetRandomNPC(int exclude)
     {
         int rndIndex = Random.Range(0, npcs.Count);
-        rndIndex = rndIndex == exclaimNPC ? rndIndex + 1 : rndIndex;
+        rndIndex = rndIndex == exclude ? rndIndex + 1 : rndIndex;
         rndIndex = rndIndex >= npcs.Count - 1 ? 0 : rndIndex;
 
         return npcs[rndIndex];
     }
 
-    private void Update()
+    public NPC GetNPC(int index)
     {
-        exclaimation.transform.position = npcs[exclaimNPC].transform.position;
+        return npcs[index];
+    }
+
+    public void RemoveNPC(NPC remove)
+    {
+        npcs.Remove(remove);
     }
 }
 

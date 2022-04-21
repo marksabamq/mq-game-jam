@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: aa133ca1217efdc4b9dab8e806198ee4, type: 3}
   sideSprite: {fileID: 21300000, guid: b36c410a353fd3649b7ce846c9c916ac, type: 3}
-  clothingName: 
+  clothingName: tie

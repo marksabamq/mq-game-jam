@@ -23,6 +23,7 @@ public class DialogueManager : MonoBehaviour {
 
     public void ShowDialogue(string dialogue)
     {
+        Debug.Log("UI showing");
         fadeTo = 1;
         dialogueText.text = dialogue;
     }
