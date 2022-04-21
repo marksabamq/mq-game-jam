@@ -8,6 +8,8 @@ public class ClothingItems : ScriptableObject {
     public Sprite sideSprite;
 
     public string clothingName;
+    public bool prefixA = false;
+
 
     [Tooltip("Use tag <color> to replace with generated colour")]
     public string[] customReferences;

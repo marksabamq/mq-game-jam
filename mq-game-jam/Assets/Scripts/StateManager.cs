@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class StateManager : MonoBehaviour
     public PlayerController player;
     public NPCGenerator generator;
     public DialogueManager dialogueManager;
+
+    public Camera cam;
 
     [Header("Prefabs")]
     public GameObject threadLR;
@@ -18,8 +21,11 @@ public class StateManager : MonoBehaviour
 
     public GameObject exclaimation;
     private NPC exclaimNPC;
+    private int exclainNPCIndex = -1;
+    private string currDialogue = "";
 
     bool searching = false;
+    bool lastPerson = false;
 
     public static StateManager instance;
 
@@ -34,7 +40,8 @@ public class StateManager : MonoBehaviour
 
     public void NewExclaimation()
     {
-        exclaimNPC = generator.GetRandomNPC();
+        exclainNPCIndex = Random.Range(0, generator.npcs.Count);
+        exclaimNPC = generator.npcs[exclainNPCIndex];
         exclaimNPC.moveAway = false;
         exclaimNPC.exclaimation = true;
     }
@@ -48,31 +55,44 @@ public class StateManager : MonoBehaviour
             dialogueManager.ShowDialogue("Hey! I need help finding someone. They look like...");
             dialogueManager.ShowDialogue("...you :)");
             player.canMove = false;
+            generator.npcs[0].HeartFade(1);
+            player.HeartFade(1);
+
+            lastPerson = true;
         }
         else
         {
-            helpNPC = fromNPC;
-
-            findNPC = generator.GetRandomNPC(generator.npcs.IndexOf(exclaimNPC));
-            findNPC.moveAway = false;
-
             if (!searching)
             {
+                helpNPC = fromNPC;
+
+                helpNPC.FadeRope(1);
+
+                findNPC = generator.GetRandomNPC(exclainNPCIndex);
+                findNPC.moveAway = false;
+
                 GameObject newThread = Instantiate(threadLR, transform.position, Quaternion.identity);
                 if (!newThread.GetComponent<Thread>()) { Debug.Log("Tf"); }
                 currentThread = newThread.GetComponent<Thread>();
                 currentThread.CreateThread(fromNPC.transform, player.transform, true);
 
                 searching = true;
-            }
+                string dialogue = generator.RandomReference();
 
-            string[] clothingReferences = findNPC.clothingItem.clothingItem.customReferences.Length > 0 && Random.Range(0, 5) > 3 ? findNPC.clothingItem.clothingItem.customReferences : generator.clothingReferences;
-            string formattedClothingColour = $"<color=#{rgbToHex(findNPC.clothingItem.clothingColour.colour)}>{findNPC.clothingItem.clothingColour.colourName}</color>";
-            string newDialogue = clothingReferences[Random.Range(0, clothingReferences.Length)].Replace("<color>", formattedClothingColour).Replace("<item>", findNPC.clothingItem.clothingItem.clothingName);
-            dialogueManager.ShowDialogue(newDialogue);
+                if (findNPC.clothingItem.clothingItem.prefixA)
+                {
+                    Debug.Log("Prefix A");
+                    dialogue.Replace("<color> <item>", "a <color> <item>");
+                    dialogue = Regex.Replace(dialogue, "(?<!(<color>)) (<item>)", "a <item>");
+                }
+
+                string formattedClothingColour = $"<color=#{rgbToHex(findNPC.clothingItem.clothingColour.colour)}>{findNPC.clothingItem.clothingColour.colourName}</color>";
+                currDialogue = dialogue.Replace("<color>", formattedClothingColour).Replace("<item>", findNPC.clothingItem.clothingItem.clothingName);
+            }
+ 
+            dialogueManager.ShowDialogue(currDialogue);
         }
     }
-
 
     public void CheckNPC(NPC npc)
     {
@@ -86,11 +106,15 @@ public class StateManager : MonoBehaviour
                 findNPC.ConnectThread(currentThread.GetComponent<LineRenderer>(), helpNPC, true);
                 helpNPC.ConnectThread(currentThread.GetComponent<LineRenderer>(), findNPC, false);
 
-                findNPC = null;
-                helpNPC = null;
+                findNPC.FadeRope(1);
+
+                helpNPC.exclaimation = false;
 
                 generator.RemoveNPC(findNPC);
                 generator.RemoveNPC(helpNPC);
+
+                findNPC = null;
+                helpNPC = null;
 
                 searching = false;
 
@@ -109,6 +133,14 @@ public class StateManager : MonoBehaviour
         if (exclaimNPC != null)
         {
             exclaimation.transform.position = exclaimNPC.transform.position;
+        }
+
+        if (lastPerson)
+        {
+            if (cam.orthographicSize < 1)
+            {
+                cam.orthographicSize += Time.deltaTime * 2;
+            }
         }
     }
 }

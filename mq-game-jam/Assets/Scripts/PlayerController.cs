@@ -7,8 +7,12 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 3;
     [SerializeField] private SpriteRenderer spr;
     [SerializeField] private SpriteRenderer ropeSpr;
+    [SerializeField] private SpriteRenderer heart;
     public Sprite forwardSprite;
     public Sprite sideSprite;
+
+    public float fadeSpeed = 3;
+    private float heartFadeTo = 0;
 
     [HideInInspector] public bool canMove = true;
 
@@ -72,6 +76,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        heart.color = new Color(heart.color.r, heart.color.g, heart.color.b, Mathf.MoveTowards(heart.color.a, heartFadeTo, Time.deltaTime * fadeSpeed));
     }
 
     void FixedUpdate()
@@ -99,4 +105,10 @@ public class PlayerController : MonoBehaviour
             spr.sprite = sideSprite;
         }
     }
+
+    public void HeartFade(float to)
+    {
+        heartFadeTo = to;
+    }
+
 }

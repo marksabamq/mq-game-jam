@@ -9,7 +9,7 @@ public class DialogueManager : MonoBehaviour
     public CanvasGroup dialogueCanvas;
     public TextMeshProUGUI dialogueText;
 
-    public float fadeSpeed = 3;
+    public float fadeSpeed = 2;
     public float charSpeed = 0.05f;
 
 
@@ -20,6 +20,8 @@ public class DialogueManager : MonoBehaviour
 
     private float fadeTimer = 0;
 
+    private List<string> dialogueQueue = new List<string>();
+
     private void Start()
     {
         dialogueCanvas.alpha = 0;
@@ -29,25 +31,37 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueCanvas.alpha = Mathf.MoveTowards(dialogueCanvas.alpha, fadeTo, Time.deltaTime * fadeSpeed);
 
-        if (dialogueText.maxVisibleCharacters <= dialogueText.text.Length)
+        if (dialogueQueue.Count > 0)
         {
-            if (Time.time - lastShownChar > charSpeed)
+            if (dialogueText.maxVisibleCharacters <= dialogueQueue[0].Length)
             {
-                lastShownChar = Time.time;
-                dialogueText.maxVisibleCharacters++;
-            }
-        }
-        else
-        {
-            if (!allCharsShown)
-            {
-                allCharsShown = true;
-                fadeTimer = Time.time;
-            } else
-            {
-                if(Time.time - fadeTimer > 3)
+                if (Time.time - lastShownChar > charSpeed)
                 {
-                    fadeTo = 0;
+                    lastShownChar = Time.time;
+                    dialogueText.maxVisibleCharacters++;
+                }
+            }
+            else
+            {
+                if (!allCharsShown)
+                {
+                    allCharsShown = true;
+                    fadeTimer = Time.time;
+                }
+                else
+                {
+                    if (Time.time - fadeTimer > 3)
+                    {
+                        dialogueQueue.RemoveAt(0);
+                        if (dialogueQueue.Count > 0)
+                        {
+                            NextText();
+                        }
+                        else
+                        {
+                            fadeTo = 0;
+                        }
+                    }
                 }
             }
         }
@@ -57,8 +71,21 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("UI showing");
         fadeTo = 1;
-        dialogueText.text = dialogue;
 
+        if (dialogueQueue.Count == 0 || dialogueQueue[dialogueQueue.Count - 1] != dialogue)
+        {
+            dialogueQueue.Add(dialogue);
+        }
+
+        if (dialogueQueue.Count == 1)
+        {
+            NextText();
+        }
+    }
+
+    void NextText()
+    {
+        dialogueText.text = dialogueQueue[0];
         lastShownChar = Time.time;
         allCharsShown = false;
         dialogueText.maxVisibleCharacters = 0;

@@ -15,3 +15,5 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 8eae88f48fbe4ea478d15e3044587166, type: 3}
   sideSprite: {fileID: 21300000, guid: 5901acfb27a0db944934af3af698c12a, type: 3}
   clothingName: scarf
+  prefixA: 1
+  customReferences: []

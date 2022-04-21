@@ -23,14 +23,14 @@ public class NPCGenerator : MonoBehaviour {
         new ClothingColour(new Color(0,0,0), "black")
     };
 
-    [HideInInspector] public string[] clothingReferences = new string[] {
-        "Please help me find my brother. They are wearing a <color> <item>",
-        "Please help me find my sister. They are wearing a <color> <item>",
-        "Please help me find my friend. They are wearing a <color> <item>",
-        "My friend. They're wearing a <color> <item>",
-        "A <color> <item>. They were wearing a <color> <item>",
-        "Have you seen a person wearing a <color> <item> at all?",
-        "Where did they go? A <color> <item> shouldnt be too hard to spot"
+    private string[] clothingReferences = new string[] {
+        "Please help me find my brother. They are wearing <color> <item>",
+        "Please help me find my sister. They are wearing <color> <item>",
+        "Please help me find my friend. They are wearing <color> <item>",
+        "My friend. They're wearing <color> <item>",
+        "<color> <item>. They were wearing <color> <item>",
+        "Have you seen a person wearing <color> <item> at all?",
+        "Where did they go? <color> <item> shouldnt be too hard to spot",
     };
 
     private List<ClothingItem> permutatedClothing = new List<ClothingItem>();
@@ -39,6 +39,12 @@ public class NPCGenerator : MonoBehaviour {
         clothingItems = Resources.LoadAll<ClothingItems>("ClothingItems/");
         GenerateClothes();
         GenerateNPCs();
+    }
+
+    public string RandomReference()
+    {
+        Debug.Log(clothingReferences.Length);
+        return clothingReferences[Random.Range(0, clothingReferences.Length)];
     }
 
     void GenerateClothes()
@@ -53,6 +59,8 @@ public class NPCGenerator : MonoBehaviour {
                 }
             }
         }
+
+        permutatedClothing.RemoveRange(0, permutatedClothing.Count - 10);
 
         if (permutatedClothing.Count % 2 == 0) //We need an odd number
         {
@@ -74,7 +82,7 @@ public class NPCGenerator : MonoBehaviour {
             newNPC.transform.SetParent(this.transform);
 
             NPC npc = newNPC.GetComponent<NPC>();
-
+            npc.crowdSize = spawnRange;
             npc.CreateNPC(permutatedClothing[i], player);
 
             npcs.Add(npc);
@@ -85,7 +93,7 @@ public class NPCGenerator : MonoBehaviour {
     {
         int rndIndex = Random.Range(0, npcs.Count);
         rndIndex = rndIndex == exclude ? rndIndex + 1 : rndIndex;
-        rndIndex = rndIndex >= npcs.Count - 1 ? 0 : rndIndex;
+        rndIndex = rndIndex > npcs.Count - 1 ? 0 : rndIndex;
 
         return npcs[rndIndex];
     }

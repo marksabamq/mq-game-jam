@@ -6,6 +6,7 @@ public class NPC : MonoBehaviour {
 
     public SpriteRenderer characterRenderer;
     public SpriteRenderer clothingRenderer;
+
     public SpriteRenderer heart;
     public SpriteRenderer rope;
 
@@ -14,7 +15,7 @@ public class NPC : MonoBehaviour {
 
     public float fadeSpeed = 3;
 
-    [SerializeField] private float crowdSize = 15;
+    [HideInInspector] public float crowdSize = 10;
 
     private float heartFadeTo = 0;
     private float ropeFadeTo = 0;
@@ -42,6 +43,8 @@ public class NPC : MonoBehaviour {
     private bool found = false;
 
     private bool recentering = false;
+
+    private float lastFacingUpdate = 0;
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;
@@ -73,27 +76,39 @@ public class NPC : MonoBehaviour {
         if (!found)
         {
             float cDist = Vector3.Distance(transform.position, Vector3.zero);
-            if(cDist > crowdSize)
+            if (cDist > crowdSize)
             {
                 recentering = true;
             }
-            if(recentering && cDist < crowdSize * 0.75f)
+            if (recentering && cDist < crowdSize * 0.75f)
             {
                 recentering = false;
             }
-            if(recentering)
+            if (recentering)
             {
                 MoveDirHere((Vector3.zero - transform.position).normalized);
             }
 
             currMoveTime += Time.deltaTime;
-            facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
-
-            characterRenderer.sortingOrder = player.position.z < transform.position.z ? 0 : 3;
-            clothingRenderer.sortingOrder = player.position.z < transform.position.z ? 1 : 4;
 
             if (threadConnected)
             {
+                Collider[] inArea = Physics.OverlapSphere(transform.position, 3);
+                foreach (Collider b in inArea)
+                {
+                    if (b.GetComponent<NPC>())
+                    {
+                        NPC npc = b.GetComponent<NPC>();
+                        if (npc != this && npc != connectedNPC)
+                        {
+                            if (npc.moveAway)
+                            {
+                                npc.MoveDir((b.transform.position - transform.position).normalized);
+                            }
+                        }
+                    }
+                }
+
                 Vector3 threadPos = thread.GetPosition(currThreadIndex);
                 rig.velocity = (threadPos - transform.position).normalized;
 
@@ -113,6 +128,14 @@ public class NPC : MonoBehaviour {
                 }
             }
         }
+
+        facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
+
+        bool behind = player.position.z < transform.position.z;
+        characterRenderer.sortingOrder = behind ? 0 : 3;
+        clothingRenderer.sortingOrder = behind ? 1 : 4;
+        heart.sortingOrder = behind ? 1 : 4;
+        rope.sortingOrder = behind ? 1 : 4;
 
         heart.color = new Color(heart.color.r, heart.color.g, heart.color.b, Mathf.MoveTowards(heart.color.a, heartFadeTo, Time.deltaTime * fadeSpeed));
         rope.color = new Color(rope.color.r, rope.color.g, rope.color.b, Mathf.MoveTowards(rope.color.a, ropeFadeTo, Time.deltaTime * fadeSpeed));
@@ -144,22 +167,32 @@ public class NPC : MonoBehaviour {
 
     void UpdatedFacing()
     {
-        if(m_facing == 0) {
-            characterRenderer.flipX = false;
-            clothingRenderer.flipX = false;
+        if (Time.time - lastFacingUpdate > 0.3f)
+        {
+            lastFacingUpdate = Time.time;
 
-            clothingRenderer.sprite = clothingItem.clothingItem.sprite;
-            characterRenderer.sprite = forwardSprite;
-        } else {
-            characterRenderer.flipX = m_facing == -1;
-            clothingRenderer.flipX = m_facing == -1;
+            if (m_facing == 0)
+            {
+                characterRenderer.flipX = false;
+                clothingRenderer.flipX = false;
+                rope.flipX = false;
 
-            clothingRenderer.sprite = clothingItem.clothingItem.sideSprite;
-            characterRenderer.sprite = sideSprite;
+                clothingRenderer.sprite = clothingItem.clothingItem.sprite;
+                characterRenderer.sprite = forwardSprite;
+            }
+            else
+            {
+                characterRenderer.flipX = m_facing == -1;
+                clothingRenderer.flipX = m_facing == -1;
+                rope.flipX = m_facing == -1;
+
+                clothingRenderer.sprite = clothingItem.clothingItem.sideSprite;
+                characterRenderer.sprite = sideSprite;
+            }
         }
-    }
+        }
 
-    public void FadeRope(float to)
+        public void FadeRope(float to)
     {
         ropeFadeTo = to;
     }

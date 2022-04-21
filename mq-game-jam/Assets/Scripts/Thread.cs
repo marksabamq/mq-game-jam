@@ -37,6 +37,7 @@ public class Thread : MonoBehaviour
         tiedEnd = end;
         moving = move;
 
+        lr.positionCount = 0;
         linePoints.Clear();
 
         AddPos(tiedStart.position);
