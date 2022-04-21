@@ -16,11 +16,11 @@ public class NPCGenerator : MonoBehaviour {
         new ClothingColour(new Color(0,0,1), "blue"),
         new ClothingColour(new Color(0,1,0), "green"),
         new ClothingColour(new Color(1,1,0), "yellow"),
-        new ClothingColour(new Color(0.5f,0,1), "purple"),
+        new ClothingColour(new Color(0.5f,0,0.7f), "purple"),
         new ClothingColour(new Color(1,0,1), "pink"),
         new ClothingColour(new Color(0,1,1), "sky blue"),
         new ClothingColour(new Color(0,0.75f,0.5f), "teal"),
-        new ClothingColour(new Color(0,0,0), "black")
+        new ClothingColour(new Color(0.2f,0.2f,0.2f), "gray")
     };
 
     private string[] clothingReferences = new string[] {
@@ -60,7 +60,11 @@ public class NPCGenerator : MonoBehaviour {
             }
         }
 
-        permutatedClothing.RemoveRange(0, permutatedClothing.Count - 5);
+        int removeRandom = Random.Range(clothingColours.Length, clothingColours.Length * 3);
+        for(int i = 0; i < removeRandom; i++)
+        {
+            permutatedClothing.RemoveAt(Random.Range(0, permutatedClothing.Count));
+        }
 
         if (permutatedClothing.Count % 2 == 0) //We need an odd number
         {

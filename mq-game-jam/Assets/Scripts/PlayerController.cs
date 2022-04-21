@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         bool checkInteract = false;
         if (Input.GetKeyDown(KeyCode.E)) { checkInteract = true; }
 
-        Collider[] inArea = Physics.OverlapSphere(transform.position, 5);
+        Collider[] inArea = Physics.OverlapSphere(transform.position, 4);
         foreach (Collider b in inArea)
         {
             if (b.GetComponent<NPC>())
