@@ -106,7 +106,7 @@ public class NPC : MonoBehaviour {
                     HeartFade(1);
                 }
 
-                if (Vector2.Distance(v2Pos, new Vector2(threadPos.x, threadPos.z)) < 0.2f)
+                if (Vector2.Distance(v2Pos, new Vector2(threadPos.x, threadPos.z)) < 0.5f)
                 {
                     currThreadIndex = backward ? currThreadIndex - 1 : currThreadIndex + 1;
                     currThreadIndex = currThreadIndex < 0 ? 0 : currThreadIndex > thread.positionCount - 1 ? thread.positionCount - 1 : currThreadIndex;

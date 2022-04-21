@@ -23,6 +23,16 @@ public class NPCGenerator : MonoBehaviour {
         new ClothingColour(new Color(0,0,0), "black")
     };
 
+    [HideInInspector] public string[] clothingReferences = new string[] {
+        "Please help me find my brother. They are wearing a <color> <item>",
+        "Please help me find my sister. They are wearing a <color> <item>",
+        "Please help me find my friend. They are wearing a <color> <item>",
+        "My friend. They're wearing a <color> <item>",
+        "A <color> <item>. They were wearing a <color> <item>",
+        "Have you seen a person wearing a <color> <item> at all?",
+        "Where did they go? A <color> <item> shouldnt be too hard to spot"
+    };
+
     private List<ClothingItem> permutatedClothing = new List<ClothingItem>();
 
     void Start() {
@@ -71,7 +81,7 @@ public class NPCGenerator : MonoBehaviour {
         }
     }
 
-    public NPC GetRandomNPC(int exclude)
+    public NPC GetRandomNPC(int exclude = -1)
     {
         int rndIndex = Random.Range(0, npcs.Count);
         rndIndex = rndIndex == exclude ? rndIndex + 1 : rndIndex;

@@ -17,7 +17,9 @@ public class StateManager : MonoBehaviour
     private Thread currentThread;
 
     public GameObject exclaimation;
-    private int exclaimNPC = 0;
+    private NPC exclaimNPC;
+
+    bool searching = false;
 
     public static StateManager instance;
 
@@ -32,9 +34,9 @@ public class StateManager : MonoBehaviour
 
     public void NewExclaimation()
     {
-        exclaimNPC = Random.Range(0, generator.npcs.Count);
-        generator.npcs[exclaimNPC].moveAway = false;
-        generator.npcs[exclaimNPC].exclaimation = true;
+        exclaimNPC = generator.GetRandomNPC();
+        exclaimNPC.moveAway = false;
+        exclaimNPC.exclaimation = true;
     }
 
     public void NewSearch(NPC fromNPC)
@@ -51,19 +53,26 @@ public class StateManager : MonoBehaviour
         {
             helpNPC = fromNPC;
 
-            findNPC = generator.GetRandomNPC(exclaimNPC);
+            findNPC = generator.GetRandomNPC(generator.npcs.IndexOf(exclaimNPC));
             findNPC.moveAway = false;
-            string newDialogue = $"Please help me find my brother. They're wearing <color=#{rgbToHex(findNPC.clothingItem.clothingColour.colour)}>{findNPC.clothingItem.clothingColour.colourName}</color> {findNPC.clothingItem.clothingItem.clothingName}";
 
-            GameObject newThread = Instantiate(threadLR, transform.position, Quaternion.identity);
-            if (!newThread.GetComponent<Thread>()) { Debug.Log("Tf"); }
-            currentThread = newThread.GetComponent<Thread>();
-            Debug.Log(fromNPC);
-            currentThread.CreateThread(fromNPC.transform, player.transform, true);
+            if (!searching)
+            {
+                GameObject newThread = Instantiate(threadLR, transform.position, Quaternion.identity);
+                if (!newThread.GetComponent<Thread>()) { Debug.Log("Tf"); }
+                currentThread = newThread.GetComponent<Thread>();
+                currentThread.CreateThread(fromNPC.transform, player.transform, true);
 
+                searching = true;
+            }
+
+            string[] clothingReferences = findNPC.clothingItem.clothingItem.customReferences.Length > 0 && Random.Range(0, 5) > 3 ? findNPC.clothingItem.clothingItem.customReferences : generator.clothingReferences;
+            string formattedClothingColour = $"<color=#{rgbToHex(findNPC.clothingItem.clothingColour.colour)}>{findNPC.clothingItem.clothingColour.colourName}</color>";
+            string newDialogue = clothingReferences[Random.Range(0, clothingReferences.Length)].Replace("<color>", formattedClothingColour).Replace("<item>", findNPC.clothingItem.clothingItem.clothingName);
             dialogueManager.ShowDialogue(newDialogue);
         }
     }
+
 
     public void CheckNPC(NPC npc)
     {
@@ -83,6 +92,8 @@ public class StateManager : MonoBehaviour
                 generator.RemoveNPC(findNPC);
                 generator.RemoveNPC(helpNPC);
 
+                searching = false;
+
                 NewExclaimation();
             }
         }
@@ -95,9 +106,9 @@ public class StateManager : MonoBehaviour
 
     private void Update()
     {
-        if (generator.npcs[exclaimNPC] != null)
+        if (exclaimNPC != null)
         {
-            exclaimation.transform.position = generator.npcs[exclaimNPC].transform.position;
+            exclaimation.transform.position = exclaimNPC.transform.position;
         }
     }
 }

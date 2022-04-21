@@ -7,6 +7,8 @@ public class ClothingItems : ScriptableObject {
     public Sprite sprite;
     public Sprite sideSprite;
 
+    public string clothingName;
+
     [Tooltip("Use tag <color> to replace with generated colour")]
-    public string clothingName; 
+    public string[] customReferences;
 }
