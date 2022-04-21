@@ -142,7 +142,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211483015194578036}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: abf6dfde43470c645833ef27dd216030, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1
@@ -168,7 +168,11 @@ MonoBehaviour:
   forwardSprite: {fileID: 21300000, guid: cc94a0ffef7a7e246b38c418ad076b53, type: 3}
   sideSprite: {fileID: 21300000, guid: c05a7cc233f6f614e80ebaeaabaac0b6, type: 3}
   fadeSpeed: 3
+  crowdSize: 20
+  clothingItem:
+    clothingItem: {fileID: 0}
   moveAway: 1
+  exclaimation: 0
 --- !u!1 &1211483016130137751
 GameObject:
   m_ObjectHideFlags: 0

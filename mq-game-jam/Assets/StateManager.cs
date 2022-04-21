@@ -78,6 +78,11 @@ public class StateManager : MonoBehaviour
                 helpNPC.ConnectThread(currentThread.GetComponent<LineRenderer>(), findNPC, false);
 
                 findNPC = null;
+                helpNPC = null;
+
+                generator.RemoveNPC(findNPC);
+                generator.RemoveNPC(helpNPC);
+
                 NewExclaimation();
             }
         }
@@ -90,6 +95,9 @@ public class StateManager : MonoBehaviour
 
     private void Update()
     {
-        exclaimation.transform.position = generator.npcs[exclaimNPC].transform.position;
+        if (generator.npcs[exclaimNPC] != null)
+        {
+            exclaimation.transform.position = generator.npcs[exclaimNPC].transform.position;
+        }
     }
 }

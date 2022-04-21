@@ -14,6 +14,8 @@ public class NPC : MonoBehaviour {
 
     public float fadeSpeed = 3;
 
+    [SerializeField] private float crowdSize = 15;
+
     private float heartFadeTo = 0;
     private float ropeFadeTo = 0;
 
@@ -38,6 +40,8 @@ public class NPC : MonoBehaviour {
     private bool backward;
 
     private bool found = false;
+
+    private bool recentering = false;
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;
@@ -68,6 +72,20 @@ public class NPC : MonoBehaviour {
     {
         if (!found)
         {
+            float cDist = Vector3.Distance(transform.position, Vector3.zero);
+            if(cDist > crowdSize)
+            {
+                recentering = true;
+            }
+            if(recentering && cDist < crowdSize * 0.75f)
+            {
+                recentering = false;
+            }
+            if(recentering)
+            {
+                MoveDirHere((Vector3.zero - transform.position).normalized);
+            }
+
             currMoveTime += Time.deltaTime;
             facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
 
@@ -91,6 +109,7 @@ public class NPC : MonoBehaviour {
                 if (Vector2.Distance(v2Pos, new Vector2(threadPos.x, threadPos.z)) < 0.2f)
                 {
                     currThreadIndex = backward ? currThreadIndex - 1 : currThreadIndex + 1;
+                    currThreadIndex = currThreadIndex < 0 ? 0 : currThreadIndex > thread.positionCount - 1 ? thread.positionCount - 1 : currThreadIndex;
                 }
             }
         }
@@ -150,9 +169,20 @@ public class NPC : MonoBehaviour {
         heartFadeTo = to;
     }
 
-    public void MoveDir(Vector3 moveD) {
+    public void MoveDir(Vector3 moveD)
+    {
+        if (!recentering)
+        {
+            moveDir = moveD;
+            moveTime = Random.Range(0.5f, 2);
+            currMoveTime = 0;
+        }
+    }
+
+    private void MoveDirHere(Vector3 moveD)
+    {
         moveDir = moveD;
-        moveTime = Random.Range(0.5f,2);
+        moveTime = Random.Range(0.5f, 2);
         currMoveTime = 0;
     }
 }

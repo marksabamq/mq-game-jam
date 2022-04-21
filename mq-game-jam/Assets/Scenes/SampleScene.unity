@@ -518,7 +518,7 @@ MonoBehaviour:
   player: {fileID: 697296732}
   npcPrefab: {fileID: 1211483015194578036, guid: 65949a77dc9746d4987fae6b6da2a50c, type: 3}
   spawnRange: 15
-  exclaimation: {fileID: 1857316083}
+  npcs: []
 --- !u!4 &539637928
 Transform:
   m_ObjectHideFlags: 0
@@ -808,7 +808,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 697296728}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: abf6dfde43470c645833ef27dd216030, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1
@@ -1026,6 +1026,7 @@ MonoBehaviour:
   generator: {fileID: 539637927}
   dialogueManager: {fileID: 1590050172}
   threadLR: {fileID: 1132207019675401844, guid: 3d86bfc5435485d478aad820c6bd6a5f, type: 3}
+  exclaimation: {fileID: 1857316083}
 --- !u!4 &862400081
 Transform:
   m_ObjectHideFlags: 0
@@ -1174,6 +1175,7 @@ MonoBehaviour:
   dialogueCanvas: {fileID: 596545068}
   dialogueText: {fileID: 1911260224}
   fadeSpeed: 3
+  charSpeed: 0.05
 --- !u!4 &1590050173
 Transform:
   m_ObjectHideFlags: 0
