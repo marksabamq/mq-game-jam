@@ -533,7 +533,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &573755029
 GameObject:
@@ -1158,6 +1158,7 @@ GameObject:
   m_Component:
   - component: {fileID: 862400081}
   - component: {fileID: 862400080}
+  - component: {fileID: 862400082}
   m_Layer: 0
   m_Name: StateManager
   m_TagString: Untagged
@@ -1180,6 +1181,8 @@ MonoBehaviour:
   player: {fileID: 697296730}
   generator: {fileID: 539637927}
   dialogueManager: {fileID: 1590050172}
+  gameoverCanvasAnim: {fileID: 1098753786}
+  sceneLoader: {fileID: 862400082}
   cam: {fileID: 963194227}
   threadLR: {fileID: 1132207019675401844, guid: 3d86bfc5435485d478aad820c6bd6a5f, type: 3}
   exclaimation: {fileID: 1857316083}
@@ -1196,8 +1199,20 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &862400082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862400079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8277644427a52e44a8cb53cf383b46aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1328,7 +1343,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1098753780}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1629,7 +1644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueCanvas: {fileID: 596545068}
   dialogueText: {fileID: 1911260224}
-  fadeSpeed: 2
+  fadeSpeed: 1.5
   charSpeed: 0.05
 --- !u!4 &1590050173
 Transform:
@@ -1644,7 +1659,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1617591592
 GameObject:

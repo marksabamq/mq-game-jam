@@ -60,7 +60,7 @@ public class NPCGenerator : MonoBehaviour {
             }
         }
 
-        permutatedClothing.RemoveRange(0, permutatedClothing.Count - 10);
+        permutatedClothing.RemoveRange(0, permutatedClothing.Count - 5);
 
         if (permutatedClothing.Count % 2 == 0) //We need an odd number
         {

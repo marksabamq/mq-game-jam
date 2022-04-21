@@ -67,10 +67,12 @@ public class PlayerController : MonoBehaviour
                         {
                             //stop moving. generate dialogue. show dialogue
                             StateManager.instance.NewSearch(npc);
+                            return;
                         }
                         else
                         {
                             StateManager.instance.CheckNPC(npc);
+                            return;
                         }
                     }
                 }

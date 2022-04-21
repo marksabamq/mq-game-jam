@@ -23,6 +23,7 @@ public class UIHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        Debug.Log("hovering");
         scaleTo = defaultScale * scaleMultiplier;
     }
 
@@ -33,6 +34,6 @@ public class UIHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void Update()
     {
-        rect.sizeDelta = Vector2.MoveTowards(rect.rect.size, scaleTo, Time.deltaTime * hoverSpeed);
+        rect.sizeDelta = Vector2.MoveTowards(rect.sizeDelta, scaleTo, Time.deltaTime * hoverSpeed);
     }
 }

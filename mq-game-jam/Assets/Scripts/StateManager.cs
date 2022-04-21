@@ -10,6 +10,9 @@ public class StateManager : MonoBehaviour
     public NPCGenerator generator;
     public DialogueManager dialogueManager;
 
+    public Animator gameoverCanvasAnim;
+    public SceneLoader sceneLoader;
+
     public Camera cam;
 
     [Header("Prefabs")]
@@ -52,13 +55,19 @@ public class StateManager : MonoBehaviour
 
         if (generator.npcs.Count == 1)
         {
-            dialogueManager.ShowDialogue("Hey! I need help finding someone. They look like...");
-            dialogueManager.ShowDialogue("...you :)");
-            player.canMove = false;
-            generator.npcs[0].HeartFade(1);
-            player.HeartFade(1);
+            if (!lastPerson)
+            {
+                dialogueManager.ShowDialogue("Hey! I need help finding someone. They look like...");
+                dialogueManager.ShowDialogue("...you :)");
+                player.canMove = false;
+                generator.npcs[0].HeartFade(1);
+                player.HeartFade(1);
 
-            lastPerson = true;
+                lastPerson = true;
+
+                gameoverCanvasAnim.SetTrigger("FadeInMainMenu");
+                StartCoroutine(delaySceneLoad());
+            }
         }
         else
         {
@@ -82,14 +91,14 @@ public class StateManager : MonoBehaviour
                 if (findNPC.clothingItem.clothingItem.prefixA)
                 {
                     Debug.Log("Prefix A");
-                    dialogue.Replace("<color> <item>", "a <color> <item>");
+                    dialogue = dialogue.Replace("<color> <item>", "a <color> <item>");
                     dialogue = Regex.Replace(dialogue, "(?<!(<color>)) (<item>)", "a <item>");
                 }
 
                 string formattedClothingColour = $"<color=#{rgbToHex(findNPC.clothingItem.clothingColour.colour)}>{findNPC.clothingItem.clothingColour.colourName}</color>";
                 currDialogue = dialogue.Replace("<color>", formattedClothingColour).Replace("<item>", findNPC.clothingItem.clothingItem.clothingName);
             }
- 
+
             dialogueManager.ShowDialogue(currDialogue);
         }
     }
@@ -121,6 +130,13 @@ public class StateManager : MonoBehaviour
                 NewExclaimation();
             }
         }
+    }
+
+    IEnumerator delaySceneLoad()
+    {
+        yield return new WaitForSeconds(13.5f);
+        yield return new WaitForEndOfFrame();
+        sceneLoader.LoadSceneAsync(0);
     }
 
     string rgbToHex(Color c)
