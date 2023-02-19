@@ -13,12 +13,15 @@ public class NPC : MonoBehaviour {
     public Sprite forwardSprite;
     public Sprite sideSprite;
 
+    private Collider col;
+
     public float fadeSpeed = 3;
 
     [HideInInspector] public float crowdSize = 10;
 
     private float heartFadeTo = 0;
     private float ropeFadeTo = 0;
+    private float characterFadeTo = 1;
 
     private Rigidbody rig;
 
@@ -41,10 +44,10 @@ public class NPC : MonoBehaviour {
     private bool backward;
 
     private bool found = false;
-
     private bool recentering = false;
 
     private float lastFacingUpdate = 0;
+
 
     //-1 left, 0 forward, 1 right
     private int m_facing = 0;
@@ -61,6 +64,9 @@ public class NPC : MonoBehaviour {
 
     void Start() {
         rig = GetComponent<Rigidbody>();
+        rig.constraints = RigidbodyConstraints.FreezePositionZ;
+
+        col = GetComponent<Collider>();
     }
 
     public void CreateNPC(ClothingItem clothing, Transform p) {
@@ -118,6 +124,11 @@ public class NPC : MonoBehaviour {
                 {
                     found = true;
                     rig.constraints = RigidbodyConstraints.FreezeAll;
+                    if (col != null)
+                    {
+                        col.enabled = false;
+                    }
+                    CharacterFade(0.25f);
                     HeartFade(1);
                 }
 
@@ -132,13 +143,27 @@ public class NPC : MonoBehaviour {
         facing = rig.velocity.x < -flipDeadzone ? -1 : rig.velocity.x > flipDeadzone ? 1 : 0;
 
         bool behind = player.position.z < transform.position.z;
-        characterRenderer.sortingOrder = behind ? 0 : 3;
-        clothingRenderer.sortingOrder = behind ? 1 : 4;
-        heart.sortingOrder = behind ? 1 : 4;
-        rope.sortingOrder = behind ? 1 : 4;
+        int sortChar = found ? -1 : (behind ? 1 : 4);
+        characterRenderer.sortingOrder = found ? -2 : (behind ? 0 : 3);
+        clothingRenderer.sortingOrder = sortChar;
+        heart.sortingOrder = sortChar;
+        rope.sortingOrder = sortChar;
 
         heart.color = new Color(heart.color.r, heart.color.g, heart.color.b, Mathf.MoveTowards(heart.color.a, heartFadeTo, Time.deltaTime * fadeSpeed));
         rope.color = new Color(rope.color.r, rope.color.g, rope.color.b, Mathf.MoveTowards(rope.color.a, ropeFadeTo, Time.deltaTime * fadeSpeed));
+        if (found)
+        {
+            characterRenderer.color = new Color(
+                1, 
+                1, 
+                1, 
+                Mathf.MoveTowards(characterRenderer.color.a, characterFadeTo, Time.deltaTime * fadeSpeed));
+            clothingRenderer.color = new Color(
+                1,
+                1,
+                1, 
+                Mathf.MoveTowards(clothingRenderer.color.a, characterFadeTo, Time.deltaTime * fadeSpeed));
+        }
     }
 
     void FixedUpdate()
@@ -192,7 +217,7 @@ public class NPC : MonoBehaviour {
         }
         }
 
-        public void FadeRope(float to)
+    public void FadeRope(float to)
     {
         ropeFadeTo = to;
     }
@@ -200,6 +225,10 @@ public class NPC : MonoBehaviour {
     public void HeartFade(float to)
     {
         heartFadeTo = to;
+    }
+    public void CharacterFade(float to)
+    {
+        characterFadeTo = to;
     }
 
     public void MoveDir(Vector3 moveD)
