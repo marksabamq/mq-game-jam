@@ -64,7 +64,7 @@ public class NPC : MonoBehaviour {
 
     void Start() {
         rig = GetComponent<Rigidbody>();
-        rig.constraints = RigidbodyConstraints.FreezePositionZ;
+        rig.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
 
         col = GetComponent<Collider>();
     }
@@ -92,10 +92,13 @@ public class NPC : MonoBehaviour {
             }
             if (recentering)
             {
-                MoveDirHere((Vector3.zero - transform.position).normalized);
+                if (moveAway)
+                {
+                    MoveDirHere((Vector3.zero - transform.position).normalized);
+                }
             }
 
-            currMoveTime += Time.deltaTime;
+                currMoveTime += Time.deltaTime;
 
             if (threadConnected)
             {

@@ -1644,8 +1644,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueCanvas: {fileID: 596545068}
   dialogueText: {fileID: 1911260224}
-  fadeSpeed: 1.5
-  charSpeed: 0.05
+  fadeSpeed: 1.2
+  charSpeed: 0.02
 --- !u!4 &1590050173
 Transform:
   m_ObjectHideFlags: 0
@@ -1691,6 +1691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
